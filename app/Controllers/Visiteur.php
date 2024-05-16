@@ -69,40 +69,20 @@ class Visiteur extends BaseController
         $modLiaison = new ModeleLiaison();
         $donnees['secteursLiaisons'] = $modLiaison->getAllLiaisonSecteurPort();
         // var_dump($donnees);
-        return view('Visiteur/vue_SecteursLiaisons', $donnees);
+        return view('Templates/Header')
+               .view('Visiteur/vue_SecteursLiaisons', $donnees)
+               . view('Templates/Footer');
     }
 
-
-
-    public function voirLesLiaisons($referencLiaison = null)
+    public function voirTarifsLiaisons()
     {
         $modLiaison = new ModeleLiaison();
-        if ($referenceLiaison === null)
-        {
-            $data['lesLiaisons'] = $modLiaison->findAll();
-            $data['TitreDeLaPage'] = 'Tous les Liaisons';
-            return view('Templates/Header')
-            . view('Visiteur/vue_VoirLesLiaisons', $data)
-            . view('Templates/Footer');
-        } else
-        {
-            $data['uneLiaison'] = $modLiaison->find($noliaison);
-            if (empty($data['uneLiaison'])) { 
-                throw\CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
-            }
-            $data['TitreDeLaPage'] = $data['uneLiaison']->noliaison; 
-            return view('Templates/Header')
-            . view('Visiteur/vue_VoirDetailUneLiaison', $data)
-            . view('Templates/Footer');
-        }
-    } // Fin voirLesLiaisons
-
-
-
-
-
-
-
+        $donnees['tarifsLiaisons'] = $modLiaison->getAllTarifLiaison();
+        // var_dump($donnees);
+        return view('Templates/Header')
+               .view('Visiteur/vue_TarifsLiaisons', $donnees)
+               . view('Templates/Footer');
+    }
 
 
     

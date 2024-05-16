@@ -23,8 +23,10 @@ class ModeleLiaison extends Model
         return $this->join('periode p', 'p.noperiode = t.noperiode', 'inner')
         ->join('categorie c', 'c.lettrecategorie = t.lettrecategorie',  'inner')
         ->join('type', 'type.notype = t.notype',  'inner')
-        ->join('liaison l', 'l.noliaison = t.noliaison',  'inner')
-        ->select('c.libelle as libellecategorie, ')
+        ->join('tarifer t', 't.noliaison = l.noliaison',  'inner')
+        ->join('port pd', 'l.noport_depart = pd.noport',  'inner')
+        ->join('port pa', 'l.noport_arrivee = pa.noport',  'inner')
+        ->select('c.libelle as libellecategorie, type.libelle as type, p.datedebut, p.datefin, pd.nom as portdepart, pa.nom as portarrivee, t.tarif')
         ->get()->getResult();
     }
 }

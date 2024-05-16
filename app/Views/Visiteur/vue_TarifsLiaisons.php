@@ -1,13 +1,14 @@
-
 <?php
 echo "<table class='table table-bordered'>";
 echo "
 <tr>
-<th>Secteur</th>
-<th>Code Liaison</th>
-<th>Distance en milles marin</th>
-<th>Port de départ</th>
-<th>Port d'arrivée</th>
+<th>Categorie</th>
+<th>Type</th>
+<th><TR>Période</TR>
+<TR><th></th>
+<th></th>
+<th></th></TR>
+</th>
 </tr>";
 foreach ($secteursLiaisons as $sl)
 {
