@@ -20,13 +20,13 @@ class ModeleLiaison extends Model
 
     public function getAllTarifLiaison()
     {
-        return $this->join('periode p', 'p.noperiode = t.noperiode', 'inner')
+        return $this->join('tarifer t', 't.noliaison = l.noliaison',  'inner')
+        ->join('periode p', 'p.noperiode = t.noperiode', 'inner')
         ->join('categorie c', 'c.lettrecategorie = t.lettrecategorie',  'inner')
         ->join('type', 'type.notype = t.notype',  'inner')
-        ->join('tarifer t', 't.noliaison = l.noliaison',  'inner')
         ->join('port pd', 'l.noport_depart = pd.noport',  'inner')
         ->join('port pa', 'l.noport_arrivee = pa.noport',  'inner')
-        ->select('c.libelle as libellecategorie, type.libelle as type, p.datedebut, p.datefin, pd.nom as portdepart, pa.nom as portarrivee, t.tarif')
+        ->select('l.noliaison as noliaison, c.lettrecategorie as lettrecategorie, c.libelle as categorielibelle, type.libelle as type, p.datedebut as datedebut, p.datefin as datefin, pd.nom as portdepart, pa.nom as portarrivee, t.tarif as tarif')
         ->get()->getResult();
     }
 }
