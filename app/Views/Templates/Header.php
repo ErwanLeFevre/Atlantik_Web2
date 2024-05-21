@@ -21,6 +21,9 @@
       <a class="nav-link" href="<?php echo site_url('voirlesliaisons') ?>">Voir les liaisons</a>
       </li>
       <li class="nav-item">
+      <a class="nav-link" href="<?php echo site_url('connexion') ?>">Se Connecter</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="#">Link 3</a>
       </li>
     </ul>

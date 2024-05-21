@@ -4,6 +4,8 @@ use App\Models\ModeleClient;
 use App\Models\ModeleLiaison;
 use App\Models\ModeleSecteur;
 use App\Models\ModelePort;
+
+
 helper(['url', 'assets', 'form']);
 
 class Visiteur extends BaseController
@@ -64,27 +66,85 @@ class Visiteur extends BaseController
 
 
 
-    public function voirSecteursLiaisons()
+    public function voirSecteursLiaisons($noLiaison = null)
     {
         $modLiaison = new ModeleLiaison();
-        $donnees['secteursLiaisons'] = $modLiaison->getAllLiaisonSecteurPort();
-        // var_dump($donnees);
-        return view('Templates/Header')
+        if ($noLiaison === null)
+        {   
+            $donnees['secteursLiaisons'] = $modLiaison->getAllLiaisonSecteurPort();
+            // var_dump($donnees);
+            return view('Templates/Header')
                .view('Visiteur/vue_SecteursLiaisons', $donnees)
                . view('Templates/Footer');
+        } else
+        {
+            $donnees['tarifsLiaisons'] = $modLiaison->getAllTarifLiaison();
+            // var_dump($donnees);
+            return view('Templates/Header')
+                   .view('Visiteur/vue_TarifsLiaisons', $donnees)
+                   . view('Templates/Footer');
+        }
+        
     }
 
-    public function voirTarifsLiaisons()
+    public function seConnecter()
     {
-        $modLiaison = new ModeleLiaison();
-        $donnees['tarifsLiaisons'] = $modLiaison->getAllTarifLiaison();
-        // var_dump($donnees);
-        return view('Templates/Header')
-               .view('Visiteur/vue_TarifsLiaisons', $donnees)
-               . view('Templates/Footer');
-    }
+        helper(['form']);
+        $session = session();
+        $data['TitreDeLaPage'] = 'Se connecter';
+        /* TEST SI FORMULAIRE POSTE OU SI APPEL DIRECT (EN GET) */
+        if (!$this->request->is('post')) {
+            return view('Templates/Header', $data) // Renvoi formulaire de connexion
+            . view('Visiteur/vue_SeConnecter')
+            . view('Templates/Footer');
+        }
+        /* SI FORMULAIRE NON POSTE, LE CODE QUI SUIT N'EST PAS EXECUTE */
+        /* VALIDATION DU FORMULAIRE */
+        $reglesValidation = [ // Régles de validation
+            'txtnom' => 'required',
+            'txtMotDePasse' => 'required',
+        ];
 
+        if (!$this->validate($reglesValidation)) {
+            /* formulaire non validé */
+            $data['TitreDeLaPage'] = "Saisie incorrecte";
+            return view('Templates/Header', $data)
+            . view('Visiteur/vue_SeConnecter') // Renvoi formulaire de connexion
+            . view('Templates/Footer');
+        }
+        /* SI FORMULAIRE NON VALIDE, LE CODE QUI SUIT N'EST PAS EXECUTE */
+        /* RECHERCHE Client DANS BDD */
+        $nom = $this->request->getPost('txtnom');
+        $MdP = $this->request->getPost('txtMotDePasse');
+        /* on va chercher dans la BDD l'Client correspondant aux id et mot de passe saisis */
+        $modClient = newModeleClient(); // instanciation modèle
+        $condition = ['nom'=>$nom,'motdepasse'=>$MdP];
+        $ClientRetourne = $modClient->where($condition)->first();
+        /* where : méthode, QueryBuilder, héritée de Model (), retourne,
+        ici sous forme d'un objet, le résultat de la requête :
+        SELECT * FROM Client  WHERE nom='$pId' and motdepasse='$MotdePasse
+        ClientRetourne = objet Client ($returnType = 'object')
+        */
+        if ($ClientRetourne != null) {
+            /* nom et mot de passe OK : nom et profil sont stockés en session */
+            $session->set('nom', $ClientRetourne->nom);
+            $data['nom'] = $nom;
+            echo view('Templates/Header', $data);
+            echo view('Visiteur/vue_ConnexionReussie');
+        } else {
+            /* nom et/ou mot de passe OK : on renvoie le formulaire  */
+            $data['TitreDeLaPage'] = "Identifiant ou/et Mot de passe inconnu(s)";
+            return view('Templates/Header', $data)
+            . view('Visiteur/vue_SeConnecter')
+            . view('Templates/Footer');
+        }
+    } // Fin seConnecter
 
+    public function seDeconnecter()
+    {
+        session()->destroy();
+        returnredirect()->to('seconnecter');
+    } // Fin seDeconnecter
     
 }
 

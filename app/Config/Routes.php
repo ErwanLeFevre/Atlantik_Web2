@@ -8,8 +8,8 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 $routes->get('accueil', 'Visiteur::accueil');
 //$routes->get('voirlesliaisons', 'Visiteur::voirLesLiaisons');
-$routes->get('voirtarifsliaisons/(:alphanum)', 'Visiteur::voirTarifsLiaisons/$1');
+$routes->get('voirsecteursliaisons/(:alphanum)', 'Visiteur::voirSecteursLiaisons/$1');
 $routes->get('voirsecteursliaisons', 'Visiteur::voirSecteursLiaisons');
 //$routes->get('voirtarifsliaisons', 'Visiteur::voirTarifsLiaisons');
-
+$routes->get('connexion', 'Visiteur::seConnecter');
 $routes->match(['get', 'post'], 'inscription', 'Visiteur::inscription');
