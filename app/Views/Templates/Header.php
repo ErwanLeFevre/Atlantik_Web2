@@ -20,6 +20,16 @@
       <li class="nav-item">
       <a class="nav-link" href="<?php echo site_url('voirlesliaisons') ?>">Voir les liaisons</a>
       </li>
+      
+      <?php
+        $session = session();
+        if(!is_null($session->get('identifiant'))) : ?>
+        <?php echo 'Utilisateur connecté : ' . $session->get('identifiant').'&nbsp;&nbsp;'; ?>
+        <li class="nav-item">
+          <a href="<?php echo site_url('sedeconnecter') ?>">Se déconnecter</a>&nbsp;&nbsp;
+        </li>
+        <?php endif; ?>
+
       <li class="nav-item">
       <a class="nav-link" href="<?php echo site_url('connexion') ?>">Se Connecter</a>
       </li>

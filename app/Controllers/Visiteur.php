@@ -117,7 +117,7 @@ class Visiteur extends BaseController
         $nom = $this->request->getPost('txtnom');
         $MdP = $this->request->getPost('txtMotDePasse');
         /* on va chercher dans la BDD l'Client correspondant aux id et mot de passe saisis */
-        $modClient = newModeleClient(); // instanciation modèle
+        $modClient = new ModeleClient(); // instanciation modèle
         $condition = ['nom'=>$nom,'motdepasse'=>$MdP];
         $ClientRetourne = $modClient->where($condition)->first();
         /* where : méthode, QueryBuilder, héritée de Model (), retourne,
@@ -128,7 +128,9 @@ class Visiteur extends BaseController
         if ($ClientRetourne != null) {
             /* nom et mot de passe OK : nom et profil sont stockés en session */
             $session->set('nom', $ClientRetourne->nom);
+            $session->set('profil', $ClientRetourne->profil);
             $data['nom'] = $nom;
+            $data['profil'] = 'Client';
             echo view('Templates/Header', $data);
             echo view('Visiteur/vue_ConnexionReussie');
         } else {
@@ -138,13 +140,7 @@ class Visiteur extends BaseController
             . view('Visiteur/vue_SeConnecter')
             . view('Templates/Footer');
         }
-    } // Fin seConnecter
-
-    public function seDeconnecter()
-    {
-        session()->destroy();
-        returnredirect()->to('seconnecter');
-    } // Fin seDeconnecter
+    } // Fin seconnecter
     
 }
 

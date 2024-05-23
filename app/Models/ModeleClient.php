@@ -5,7 +5,9 @@ class ModeleClient extends Model
 {
     protected $table = 'client';
     protected $primaryKey = 'noclient'; // clé primaire
-    protected $useAutoIncrement = false;
+    protected $useAutoIncrement = true;
     protected $returnType = 'object'; // résultats retournés sous forme d'objet(s)
-    protected $allowedFields = ['noclient', 'nom', 'prenom', 'codepostal', 'ville', 'tephonefixe', 'telephonemobile', 'mel', 'motdepasse'];
+    protected $allowedFields = ['nom', 'prenom', 'codepostal', 'ville', 'tephonefixe', 'telephonemobile', 'mel', 'motdepasse'];
+
+    
 }
