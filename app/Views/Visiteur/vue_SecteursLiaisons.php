@@ -1,23 +1,24 @@
+<h2><?= $TitreDeLaPage ?></h2>
 
-<?php
-echo "<table class='table table-bordered'>";
-echo "
-<tr>
-<th>Secteur</th>
-<th>Code Liaison</th>
-<th>Distance en milles marin</th>
-<th>Port de départ</th>
-<th>Port d'arrivée</th>
-</tr>";
-foreach ($secteursLiaisons as $sl)
-{
-    echo "<TR>";
-    echo "<TD>".$sl->nomsecteur."</TD><TD>"
-    .anchor('voirtarifsliaisons/'.$sl->noliaison)."</TD><TD>"
-    .$sl->distance."</TD><TD>"
-    .$sl->portdepart."</TD><TD>"
-    .$sl->portarrivee."</TD><TD>";
-    echo "</TR>";
-}
-echo "</table>";
-?>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Secteur</th>
+            <th>Code Liaison</th>
+            <th>Distance en milles marin</th>
+            <th>Port de départ</th>
+            <th>Port d'arrivée</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($secteursLiaisons as $sl): ?>
+            <tr>
+                <td><?= $sl->nomsecteur ?></td>
+                <td><?= anchor('voirsecteursliaisons/'.$sl->liaison, $sl->liaison) ?></td>
+                <td><?= $sl->distance ?></td>
+                <td><?= $sl->portdepart ?></td>
+                <td><?= $sl->portarrivee ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

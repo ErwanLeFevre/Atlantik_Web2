@@ -1,4 +1,5 @@
 <?php
+
 echo "<table class='table table-bordered'>";
 echo "
 <tr>

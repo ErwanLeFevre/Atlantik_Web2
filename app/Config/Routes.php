@@ -12,7 +12,7 @@ $routes->get('voirsecteursliaisons/(:alphanum)', 'Visiteur::voirSecteursLiaisons
 $routes->get('voirsecteursliaisons', 'Visiteur::voirSecteursLiaisons');
 //$routes->get('voirtarifsliaisons', 'Visiteur::voirTarifsLiaisons');
 
-$routes->get('connexion', 'Visiteur::seConnecter');
-$routes->get('deconnexion', 'Client::seDeconnecter', ["filter"=> "filtresuper"]);
+$routes->match(['get', 'post'], 'connexion', 'Visiteur::seConnecter');
+$routes->get('deconnexion', 'Client::seDeconnecter', ["filter"=> "filtreclient"]);
 
 $routes->match(['get', 'post'], 'inscription', 'Visiteur::inscription');

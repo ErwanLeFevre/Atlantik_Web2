@@ -20,33 +20,39 @@ class Visiteur extends BaseController
     public function inscription()
     {
         $data['TitreDeLaPage'] = 'Se créer un Compte';
+    
+        // Vérifier si le formulaire a été soumis
         if (!$this->request->is('post')) {
-            /* le formulaire n'a pas été posté, on retourne le formulaire */
+            /* Le formulaire n'a pas été posté, on retourne le formulaire */
             return view('Templates/Header')
-            . view('Visiteur/vue_Inscription', $data)
-            . view('Templates/Footer');
+                . view('Visiteur/vue_Inscription', $data)
+                . view('Templates/Footer');
         }
-        /* VALIDATION DU FORMULAIRE */
+    
+        /* Validation du formulaire */
         $reglesValidation = [
             'txtNom' => 'required|string|max_length[30]',
             'txtPrenom' => 'required|string|max_length[30]',
-            // obligatoire, chaîne de carac. <= 30 carac.
             'txtAdresse' => 'required|string|max_length[30]',
             'txtCP' => 'required|string|max_length[30]',
             'txtVille' => 'required|string|max_length[30]',
             'txtTelFixe' => 'required|string|max_length[10]',
             'txtTelMobile' => 'required|string|max_length[10]',
-            'txtMel' => 'required|string|max_length[30]',
+            'txtMel' => 'required|valid_email|max_length[30]',
             'txtMDP' => 'required|string|max_length[30]',
         ];
+
+        // Valider les données du formulaire
         if (!$this->validate($reglesValidation)) {
-            /* formulaire non validé, on renvoie le formulaire */
+            /* Formulaire non validé, on renvoie le formulaire */
             $data['TitreDeLaPage'] = "Inscription incorrecte";
             return view('Templates/Header')
-            . view('Visiteur/vue_Inscription', $data)
-            . view('Templates/Footer');
+                . view('Visiteur/vue_Inscription', $data)
+                . view('Templates/Footer');
         }
-        $donneesAInserer = array(
+    
+        // Données à insérer dans la base de données
+        $donneesAInserer = [
             'nom' => $this->request->getPost('txtNom'),
             'prenom' => $this->request->getPost('txtPrenom'),
             'adresse' => $this->request->getPost('txtAdresse'),
@@ -55,14 +61,18 @@ class Visiteur extends BaseController
             'telfixe' => $this->request->getPost('txtTelFixe'),
             'telmobile' => $this->request->getPost('txtTelMobile'),
             'mel' => $this->request->getPost('txtMel'),
-            'mdp' => $this->request->getPost('txtMDP'),
-        );
-        $modelClient = newModeleClient();
-        $donnees['clientAjoute'] = $modelClient->insert($donneesAInserer, false);
+            'mdp' => password_hash($this->request->getPost('txtMDP'), PASSWORD_DEFAULT),
+        ];
+    
+        // Insérer les données dans la base de données
+        $modelClient = new ModeleClient();
+        $donnees['clientAjoute'] = $modelClient->insert($donneesAInserer, true);
+    
+        // Charger la vue pour afficher le rapport d'inscription
         return view('Templates/Header')
-            .view('Visiteur/vue_RapportInscrition', $donnees)
-            .view('Templates/Footer');
-    } // ajouterClient
+            . view('Visiteur/vue_RapportInscription', $donnees)
+            . view('Templates/Footer');
+    } // Ajout Client
 
 
 
@@ -72,14 +82,14 @@ class Visiteur extends BaseController
         if ($noLiaison === null)
         {   
             $donnees['secteursLiaisons'] = $modLiaison->getAllLiaisonSecteurPort();
-            // var_dump($donnees);
+            $donnees['TitreDeLaPage'] = 'Toutes les liaisons';
             return view('Templates/Header')
                .view('Visiteur/vue_SecteursLiaisons', $donnees)
                . view('Templates/Footer');
         } else
         {
+            $donnees['liaison'] = $modLiaison->find($noLiaison);
             $donnees['tarifsLiaisons'] = $modLiaison->getAllTarifLiaison();
-            // var_dump($donnees);
             return view('Templates/Header')
                    .view('Visiteur/vue_TarifsLiaisons', $donnees)
                    . view('Templates/Footer');
@@ -118,18 +128,18 @@ class Visiteur extends BaseController
         $MdP = $this->request->getPost('txtMotDePasse');
         /* on va chercher dans la BDD l'Client correspondant aux id et mot de passe saisis */
         $modClient = new ModeleClient(); // instanciation modèle
-        $condition = ['nom'=>$nom,'motdepasse'=>$MdP];
+        $condition = ['NOM'=>$nom,'motdepasse'=>$MdP];
         $ClientRetourne = $modClient->where($condition)->first();
         /* where : méthode, QueryBuilder, héritée de Model (), retourne,
         ici sous forme d'un objet, le résultat de la requête :
         SELECT * FROM Client  WHERE nom='$pId' and motdepasse='$MotdePasse
         ClientRetourne = objet Client ($returnType = 'object')
         */
+        //die();
         if ($ClientRetourne != null) {
             /* nom et mot de passe OK : nom et profil sont stockés en session */
-            $session->set('nom', $ClientRetourne->nom);
-            $session->set('profil', $ClientRetourne->profil);
-            $data['nom'] = $nom;
+            $session->set('NOM', $ClientRetourne->NOM);
+            $data['NOM'] = $nom;
             $data['profil'] = 'Client';
             echo view('Templates/Header', $data);
             echo view('Visiteur/vue_ConnexionReussie');

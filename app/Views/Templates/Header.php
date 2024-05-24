@@ -18,7 +18,7 @@
         <a class="nav-link" href="<?php echo site_url('inscription') ?>">Inscription</a>
       </li>
       <li class="nav-item">
-      <a class="nav-link" href="<?php echo site_url('voirlesliaisons') ?>">Voir les liaisons</a>
+      <a class="nav-link" href="<?php echo site_url('voirsecteursliaisons') ?>">Voir les liaisons</a>
       </li>
       
       <?php
