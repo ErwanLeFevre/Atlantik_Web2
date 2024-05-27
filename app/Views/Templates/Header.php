@@ -20,6 +20,9 @@
       <li class="nav-item">
       <a class="nav-link" href="<?php echo site_url('voirsecteursliaisons') ?>">Voir les liaisons</a>
       </li>
+      <li class="nav-item">
+      <a class="nav-link" href="<?php echo site_url('horairestraversees') ?>">Voir les Horaires</a>
+      </li>
       
       <?php
         $session = session();
@@ -29,12 +32,8 @@
           <a href="<?php echo site_url('sedeconnecter') ?>">Se déconnecter</a>&nbsp;&nbsp;
         </li>
         <?php endif; ?>
-
       <li class="nav-item">
       <a class="nav-link" href="<?php echo site_url('connexion') ?>">Se Connecter</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Link 3</a>
       </li>
     </ul>
   </div>

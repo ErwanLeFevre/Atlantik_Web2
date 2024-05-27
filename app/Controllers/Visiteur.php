@@ -4,6 +4,8 @@ use App\Models\ModeleClient;
 use App\Models\ModeleLiaison;
 use App\Models\ModeleSecteur;
 use App\Models\ModelePort;
+use App\Models\ModeleCategorie;
+use App\Models\ModeleEnregistrer;
 
 
 helper(['url', 'assets', 'form']);
@@ -17,15 +19,16 @@ class Visiteur extends BaseController
             . view('Templates/Footer');
     }
 
+
     public function inscription()
     {
-        $data['TitreDeLaPage'] = 'Se créer un Compte';
+        $donnees['TitreDeLaPage'] = 'Se créer un Compte';
     
         // Vérifier si le formulaire a été soumis
         if (!$this->request->is('post')) {
             /* Le formulaire n'a pas été posté, on retourne le formulaire */
             return view('Templates/Header')
-                . view('Visiteur/vue_Inscription', $data)
+                . view('Visiteur/vue_Inscription', $donnees)
                 . view('Templates/Footer');
         }
     
@@ -45,9 +48,9 @@ class Visiteur extends BaseController
         // Valider les données du formulaire
         if (!$this->validate($reglesValidation)) {
             /* Formulaire non validé, on renvoie le formulaire */
-            $data['TitreDeLaPage'] = "Inscription incorrecte";
+            $donnees['TitreDeLaPage'] = "Inscription incorrecte";
             return view('Templates/Header')
-                . view('Visiteur/vue_Inscription', $data)
+                . view('Visiteur/vue_Inscription', $donnees)
                 . view('Templates/Footer');
         }
     
@@ -76,6 +79,7 @@ class Visiteur extends BaseController
 
 
 
+
     public function voirSecteursLiaisons($noLiaison = null)
     {
         $modLiaison = new ModeleLiaison();
@@ -88,23 +92,68 @@ class Visiteur extends BaseController
                . view('Templates/Footer');
         } else
         {
-            $donnees['liaison'] = $modLiaison->find($noLiaison);
-            $donnees['tarifsLiaisons'] = $modLiaison->getAllTarifLiaison();
+            $donnees['liaison'] = $modLiaison->find();
+            $donnees['tarifsLiaisons'] = $modLiaison->getAllTarifLiaison($noLiaison);
             return view('Templates/Header')
                    .view('Visiteur/vue_TarifsLiaisons', $donnees)
                    . view('Templates/Footer');
         }
         
     }
+    
+    public function voirHorairesTraversees($noLiaison = null, $dateTraversee = null)
+    {
+        $modeleSecteur = new ModeleSecteur();
+        $modeleLiaison = new ModeleLiaison();
+        $modeleCategorie = new ModeleCategorie();
+        $modeleEnregistrer = new ModeleEnregistrer();
+
+        $donnees['secteurs'] = $modeleSecteur->findAll();
+        $donnees['liaisons'] = [];
+        $donnees['tableauTraversees'] = [];
+        $donnees['categories'] = $modeleCategorie->getLesCategories();
+        $donnees['TitreDeLaPage'] = 'Sélectionner le secteur, la liaison et la date souhaitée';
+
+        if ($this->request->getMethod() == 'post') {
+            $noSecteur = $this->request->getPost('noSecteur');
+            $noLiaison = $this->request->getPost('noLiaison');
+            $dateTraversee = $this->request->getPost('dateTraversee');
+            if ($noSecteur) {
+                $donnees['liaisons'] = $modeleLiaison->where('nosecteur', $noSecteur)->findAll();
+            }
+            if ($noLiaison && $dateTraversee) {
+                $traversees = $modeleTraversee->getLesTraverseesBateaux($noLiaison, $dateTraversee);
+                foreach ($traversees as $traversee) {
+                    $ligne = [
+                        'noTraversee' => $traversee->notraversee,
+                        'heure' => $traversee->heure,
+                        'bateau' => $traversee->nom,
+                    ];
+                    foreach ($donnees['categories'] as $categorie) {
+                        $capaciteMaximale = $modeleCategorie->getCapaciteMaximale($traversee->notraversee, $categorie->lettrecategorie);
+                        $quantiteEnregistree = $modeleEnregistrer->getQuantiteEnregistree($traversee->notraversee, $categorie->lettrecategorie);
+                        $placesDisponibles = $capaciteMaximale[0]->capaMax - $quantiteEnregistree[0]->placeRes;
+                        $ligne[$categorie->lettrecategorie] = $placesDisponibles;
+                    }
+                    $donnees['tableauTraversees'][] = $ligne;
+                }
+            }
+        }
+        return view('Templates/Header')
+            . view('Visiteur/vue_HorairesTraversees', $donnees)
+            . view('Templates/Footer');
+    }
+
+
 
     public function seConnecter()
     {
         helper(['form']);
         $session = session();
-        $data['TitreDeLaPage'] = 'Se connecter';
+        $donnees['TitreDeLaPage'] = 'Se connecter';
         /* TEST SI FORMULAIRE POSTE OU SI APPEL DIRECT (EN GET) */
         if (!$this->request->is('post')) {
-            return view('Templates/Header', $data) // Renvoi formulaire de connexion
+            return view('Templates/Header', $donnees) // Renvoi formulaire de connexion
             . view('Visiteur/vue_SeConnecter')
             . view('Templates/Footer');
         }
@@ -117,8 +166,8 @@ class Visiteur extends BaseController
 
         if (!$this->validate($reglesValidation)) {
             /* formulaire non validé */
-            $data['TitreDeLaPage'] = "Saisie incorrecte";
-            return view('Templates/Header', $data)
+            $donnees['TitreDeLaPage'] = "Saisie incorrecte";
+            return view('Templates/Header', $donnees)
             . view('Visiteur/vue_SeConnecter') // Renvoi formulaire de connexion
             . view('Templates/Footer');
         }
@@ -139,14 +188,14 @@ class Visiteur extends BaseController
         if ($ClientRetourne != null) {
             /* nom et mot de passe OK : nom et profil sont stockés en session */
             $session->set('NOM', $ClientRetourne->NOM);
-            $data['NOM'] = $nom;
-            $data['profil'] = 'Client';
-            echo view('Templates/Header', $data);
+            $donnees['NOM'] = $nom;
+            $donnees['profil'] = 'Client';
+            echo view('Templates/Header', $donnees);
             echo view('Visiteur/vue_ConnexionReussie');
         } else {
             /* nom et/ou mot de passe OK : on renvoie le formulaire  */
-            $data['TitreDeLaPage'] = "Identifiant ou/et Mot de passe inconnu(s)";
-            return view('Templates/Header', $data)
+            $donnees['TitreDeLaPage'] = "Identifiant ou/et Mot de passe inconnu(s)";
+            return view('Templates/Header', $donnees)
             . view('Visiteur/vue_SeConnecter')
             . view('Templates/Footer');
         }

@@ -5,7 +5,7 @@ class ModeleSecteur extends Model
 {
     protected $table = 'secteur';
     protected $primaryKey = 'nosecteur'; // clé primaire
-    protected $useAutoIncrement = false;
+    protected $useAutoIncrement = true;
     protected $returnType = 'object'; // résultats retournés sous forme d'objet(s)
-    protected $allowedFields = ['nosecteur', 'nom'];
+    protected $allowedFields = ['NOM'];
 }

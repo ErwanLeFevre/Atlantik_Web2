@@ -18,7 +18,7 @@ class ModeleLiaison extends Model
                     ->get()->getResult();
     }
 
-    public function getAllTarifLiaison()
+    public function getAllTarifLiaison()//$liaison
     {
         return $this->join('tarifer', 'tarifer.noliaison = liaison.noliaison', 'inner')
                     ->join('periode', 'periode.noperiode = tarifer.noperiode', 'inner')
@@ -27,6 +27,15 @@ class ModeleLiaison extends Model
                     ->join('port as port_depart', 'liaison.noport_depart = port_depart.noport', 'inner')
                     ->join('port as port_arrivee', 'liaison.noport_arrivee = port_arrivee.noport', 'inner')
                     ->select('categorie.lettrecategorie as lettrecategorie, categorie.libelle as categorielibelle, type.libelle as type, periode.datedebut as datedebut, periode.datefin as datefin, port_depart.nom as portdepart, port_arrivee.nom as portarrivee, tarifer.tarif as tarif')
+                    //->where('liaison.noliaison', $liaison)
+                    ->get()->getResult();
+    }
+
+    public function LesTraverseesBateaux($noLiaison, $dateTraversee)
+    {
+        return $this->join('traversee', 'traversee.noliaison = liaison.noliaison', 'inner')
+                    ->join('bateau', 'traversee.nobateau = bateau.nobateau', 'inner')
+                    ->select('traversee.notraversee as traversee, traversee.dateheuredepart as DHDepart, traversee.dateheurearrivee as DHArrivee')
                     ->get()->getResult();
     }
 }

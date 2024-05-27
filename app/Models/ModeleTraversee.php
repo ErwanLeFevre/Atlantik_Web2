@@ -5,7 +5,8 @@ class ModeleTraversee extends Model
 {
     protected $table = 'traversee';
     protected $primaryKey = 'notraversee'; // clé primaire
-    protected $useAutoIncrement = false;
+    protected $useAutoIncrement = true;
     protected $returnType = 'object'; // résultats retournés sous forme d'objet(s)
-    protected $allowedFields = ['notraversee', 'noliaison', 'nobateau', 'dateheuredepart', 'dateheurearrivee'];
+    protected $allowedFields = ['noliaison', 'nobateau', 'dateheuredepart', 'dateheurearrivee'];
+
 }
