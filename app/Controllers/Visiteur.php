@@ -23,16 +23,16 @@ class Visiteur extends BaseController
     public function inscription()
     {
         $donnees['TitreDeLaPage'] = 'Se créer un Compte';
-    
+
         // Vérifier si le formulaire a été soumis
         if (!$this->request->is('post')) {
-            /* Le formulaire n'a pas été posté, on retourne le formulaire */
+            // Le formulaire n'a pas été posté, on retourne le formulaire
             return view('Templates/Header')
                 . view('Visiteur/vue_Inscription', $donnees)
                 . view('Templates/Footer');
         }
-    
-        /* Validation du formulaire */
+
+        // Validation du formulaire
         $reglesValidation = [
             'txtNom' => 'required|string|max_length[30]',
             'txtPrenom' => 'required|string|max_length[30]',
@@ -47,30 +47,30 @@ class Visiteur extends BaseController
 
         // Valider les données du formulaire
         if (!$this->validate($reglesValidation)) {
-            /* Formulaire non validé, on renvoie le formulaire */
+            // Formulaire non validé, on renvoie le formulaire
             $donnees['TitreDeLaPage'] = "Inscription incorrecte";
             return view('Templates/Header')
                 . view('Visiteur/vue_Inscription', $donnees)
                 . view('Templates/Footer');
         }
-    
+
         // Données à insérer dans la base de données
         $donneesAInserer = [
             'nom' => $this->request->getPost('txtNom'),
             'prenom' => $this->request->getPost('txtPrenom'),
             'adresse' => $this->request->getPost('txtAdresse'),
-            'cp' => $this->request->getPost('txtCP'),
+            'codepostal' => $this->request->getPost('txtCP'),
             'ville' => $this->request->getPost('txtVille'),
-            'telfixe' => $this->request->getPost('txtTelFixe'),
-            'telmobile' => $this->request->getPost('txtTelMobile'),
+            'telephonefixe' => $this->request->getPost('txtTelFixe'),
+            'telephonemobile' => $this->request->getPost('txtTelMobile'),
             'mel' => $this->request->getPost('txtMel'),
-            'mdp' => password_hash($this->request->getPost('txtMDP'), PASSWORD_DEFAULT),
+            'motdepasse' => password_hash($this->request->getPost('txtMDP'), PASSWORD_DEFAULT),
         ];
-    
+
         // Insérer les données dans la base de données
         $modelClient = new ModeleClient();
-        $donnees['clientAjoute'] = $modelClient->insert($donneesAInserer, true);
-    
+        $donnees['clientAjoute'] = $modelClient->insert($donneesAInserer);
+
         // Charger la vue pour afficher le rapport d'inscription
         return view('Templates/Header')
             . view('Visiteur/vue_RapportInscription', $donnees)
@@ -146,60 +146,53 @@ class Visiteur extends BaseController
 
 
 
-    public function seConnecter()
+    public function connexion()
     {
         helper(['form']);
         $session = session();
         $donnees['TitreDeLaPage'] = 'Se connecter';
-        /* TEST SI FORMULAIRE POSTE OU SI APPEL DIRECT (EN GET) */
+
+        // Vérifier si le formulaire a été soumis
         if (!$this->request->is('post')) {
-            return view('Templates/Header', $donnees) // Renvoi formulaire de connexion
-            . view('Visiteur/vue_SeConnecter')
-            . view('Templates/Footer');
+            return view('Templates/Header', $donnees)
+                . view('Visiteur/vue_SeConnecter')
+                . view('Templates/Footer');
         }
-        /* SI FORMULAIRE NON POSTE, LE CODE QUI SUIT N'EST PAS EXECUTE */
-        /* VALIDATION DU FORMULAIRE */
-        $reglesValidation = [ // Régles de validation
+
+        // Validation du formulaire
+        $reglesValidation = [
             'txtnom' => 'required',
             'txtMotDePasse' => 'required',
         ];
 
         if (!$this->validate($reglesValidation)) {
-            /* formulaire non validé */
             $donnees['TitreDeLaPage'] = "Saisie incorrecte";
             return view('Templates/Header', $donnees)
-            . view('Visiteur/vue_SeConnecter') // Renvoi formulaire de connexion
-            . view('Templates/Footer');
+                . view('Visiteur/vue_SeConnecter', ['validation' => $this->validator])
+                . view('Templates/Footer');
         }
-        /* SI FORMULAIRE NON VALIDE, LE CODE QUI SUIT N'EST PAS EXECUTE */
-        /* RECHERCHE Client DANS BDD */
+
+        // Recherche du client dans la base de données
         $nom = $this->request->getPost('txtnom');
         $MdP = $this->request->getPost('txtMotDePasse');
-        /* on va chercher dans la BDD l'Client correspondant aux id et mot de passe saisis */
-        $modClient = new ModeleClient(); // instanciation modèle
-        $condition = ['NOM'=>$nom,'motdepasse'=>$MdP];
-        $ClientRetourne = $modClient->where($condition)->first();
-        /* where : méthode, QueryBuilder, héritée de Model (), retourne,
-        ici sous forme d'un objet, le résultat de la requête :
-        SELECT * FROM Client  WHERE nom='$pId' and motdepasse='$MotdePasse
-        ClientRetourne = objet Client ($returnType = 'object')
-        */
-        //die();
-        if ($ClientRetourne != null) {
-            /* nom et mot de passe OK : nom et profil sont stockés en session */
-            $session->set('NOM', $ClientRetourne->NOM);
-            $donnees['NOM'] = $nom;
-            $donnees['profil'] = 'Client';
-            echo view('Templates/Header', $donnees);
-            echo view('Visiteur/vue_ConnexionReussie');
+        $modClient = new ModeleClient();
+        $clientRetourne = $modClient->where('nom', $nom)->first();
+
+        if ($clientRetourne && password_verify($MdP, $clientRetourne->MOTDEPASSE)) {
+            // nom et mot de passe corrects : stockage en session
+            $session->set('NOM', $clientRetourne->NOM);
+            $session->set('profil', 'Client');
+            $donnees['NOM'] = $clientRetourne->NOM;
+            return view('Templates/Header', $donnees)
+                . view('Visiteur/vue_ConnexionReussie', $donnees)
+                . view('Templates/Footer');
         } else {
-            /* nom et/ou mot de passe OK : on renvoie le formulaire  */
+            // nom et/ou mot de passe incorrects
             $donnees['TitreDeLaPage'] = "Identifiant ou/et Mot de passe inconnu(s)";
             return view('Templates/Header', $donnees)
-            . view('Visiteur/vue_SeConnecter')
-            . view('Templates/Footer');
+                . view('Visiteur/vue_SeConnecter')
+                . view('Templates/Footer');
         }
     } // Fin seconnecter
-    
 }
 

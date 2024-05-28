@@ -10,20 +10,20 @@ class ModeleCategorie extends Model
     protected $allowedFields = ['lettrecategorie', 'libelle'];
 
 
-    public function  getCapaciteMaximale($noTraversee, $lettreCategorie)
+    public function getCapaciteMaximale($noTraversee, $lettreCategorie)
     {
         return $this->join('contenir', 'categorie.lettrecategorie = contenir.lettrecategorie', 'inner')
-                    ->join('bateau', 'contenir.nobateau = bateau.nobateau', 'inner')
-                    ->join('traversee', 'bateau.nobateau = traversee.nobateau', 'inner')
-                    ->select('contenir.capacitemax as capaMax')
-                    ->where('traversee.notraversee', $noTraversee)
-                    ->where('categorie.lettrecategorie', $lettreCategorie)
-                    ->get()->getResult();
+                ->join('bateau', 'contenir.nobateau = bateau.nobateau', 'inner')
+                ->join('traversee', 'bateau.nobateau = traversee.nobateau', 'inner')
+                ->select('contenir.capacitemax as capaMax')
+                ->where('traversee.notraversee', $noTraversee)
+                ->where('categorie.lettrecategorie', $lettreCategorie)
+                ->get()->getResult();
     }
-
+            
     public function getLesCategories()
     {
-        return $this->select('lettrecategorie, libelle')
-                    ->get()->getResult();
+        return $this->select('lettrecategorie, libelle')->get()->getResult();
     }
+
 }

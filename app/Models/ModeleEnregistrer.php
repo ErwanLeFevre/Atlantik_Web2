@@ -12,11 +12,11 @@ class ModeleEnregistrer extends Model
     public function getQuantiteEnregistree($noTraversee, $lettreCategorie)
     {
         return $this->join('reservation', 'enregistrer.noreservation = reservation.noreservation', 'inner')
-                    ->join('traversee', 'reservation.notraversee = traversee.notraversee', 'inner')
-                    ->select('SUM(enregistrer.quantitereservee) as placeRes')
-                    ->where('reservation.notraversee', $noTraversee)
-                    ->where('enregistrer.lettrecategorie', $lettreCategorie)
-                    ->get()
-                    ->get()->getResult();
+                ->join('traversee', 'reservation.notraversee = traversee.notraversee', 'inner')
+                ->select('SUM(enregistrer.quantitereservee) as placeRes')
+                ->where('reservation.notraversee', $noTraversee)
+                ->where('enregistrer.lettrecategorie', $lettreCategorie)
+                ->get()->getResult();
     }
+
 }

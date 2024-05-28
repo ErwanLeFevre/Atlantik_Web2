@@ -9,4 +9,14 @@ class ModeleTraversee extends Model
     protected $returnType = 'object'; // résultats retournés sous forme d'objet(s)
     protected $allowedFields = ['noliaison', 'nobateau', 'dateheuredepart', 'dateheurearrivee'];
 
+    public function getLesTraverseesBateaux($noLiaison, $dateTraversee)
+{
+    return $this->join('bateau', 'traversee.nobateau = bateau.nobateau', 'inner')
+                ->select('traversee.notraversee, traversee.heure, bateau.nom')
+                ->where('traversee.noliaison', $noLiaison)
+                ->where('traversee.date', $dateTraversee)
+                ->get()->getResult();
+}
+
+
 }

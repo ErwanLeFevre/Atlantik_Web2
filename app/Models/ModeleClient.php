@@ -4,10 +4,9 @@ use CodeIgniter\Model;
 class ModeleClient extends Model
 {
     protected $table = 'client';
-    protected $primaryKey = 'noclient'; // clé primaire
-    protected $useAutoIncrement = true;
-    protected $returnType = 'object'; // résultats retournés sous forme d'objet(s)
-    protected $allowedFields = ['nom', 'prenom', 'codepostal', 'ville', 'tephonefixe', 'telephonemobile', 'mel', 'motdepasse'];
-
-    
+    protected $primaryKey = 'noclient'; // Clé primaire
+    protected $useAutoIncrement = true; // Utilisation de l'auto-incrémentation
+    protected $returnType = 'object'; // Résultats retournés sous forme d'objet(s)
+    protected $allowedFields = ['nom', 'prenom', 'codepostal', 'ville', 'telephonefixe', 'telephonemobile', 'mel', 'motdepasse']; // Champs autorisés pour les opérations de création et de mise à jour
 }
+?>
