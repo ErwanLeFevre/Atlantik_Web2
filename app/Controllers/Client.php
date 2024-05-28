@@ -9,7 +9,7 @@ class Client extends BaseController
     public function deconnexion()
     {
         session()->destroy();
-        return redirect()->to('accueil');
+        return redirect()->to('connexion');
     } // Fin seDeconnecter
 
     public function Modification()

@@ -18,14 +18,14 @@
 </form>
 
 <!-- Sélection de la liaison et de la date si un secteur est sélectionné -->
-<?php if (!empty($liaisons)): ?>
+<?php if (!empty($secteur)): ?>
 <form method="post" action="<?php echo base_url('horairestraversees'); ?>">
     <div class="form-group">
         <label for="noLiaison">Liaison :</label>
         <select name="noLiaison" id="noLiaison" class="form-control">
             <?php foreach ($liaisons as $liaison): ?>
-                <option value="<?php echo $liaison->noliaison; ?>" <?php echo (isset($_POST['noLiaison']) && $_POST['noLiaison'] == $liaison->noliaison) ? 'selected' : ''; ?>>
-                    <?php echo $liaison->nom; ?>
+                <option value="<?php echo $liaison->NOLIAISON; ?>" <?php echo (isset($_POST['noLiaison']) && $_POST['noLiaison'] == $liaison->NOLIAISON) ? 'selected' : ''; ?>>
+                    <?php echo $liaison->NOLIAISON; ?>
                 </option>
             <?php endforeach; ?>
         </select>

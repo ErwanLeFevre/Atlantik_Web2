@@ -17,7 +17,9 @@ $routes->match(['get', 'post'], 'horairestraversees', 'Visiteur::voirHorairesTra
 
 
 $routes->match(['get', 'post'], 'connexion', 'Visiteur::connexion');
-$routes->get('deconnexion', 'Client::deconnexion', ["filter"=> "filtreclient"]);
+$routes->get('deconnexion', 'Client::deconnexion' );
 
 
 $routes->match(['get', 'post'], 'modification', 'Client::Modification');
+
+

@@ -3,11 +3,15 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Secteur</th>
-            <th>Code Liaison</th>
-            <th>Distance en milles marin</th>
-            <th>Port de départ</th>
-            <th>Port d'arrivée</th>
+            <th rowspan=2>Secteur</th>
+            <th colspan=4>Liaison
+            <tr>
+                <th>Code Liaison</th>
+                <th>Distance en milles marin</th>
+                <th>Port de départ</th>
+                <th>Port d'arrivée</th>
+            </tr>
+            </th>
         </tr>
     </thead>
     <tbody>

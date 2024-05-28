@@ -11,42 +11,42 @@
 
     <div class="form-group">
         <label for="txtNom">Nom :</label>
-        <input type="text" name="txtNom" class="form-control" value="<?= esc($client->nom); ?>" />
+        <input type="text" name="txtNom" class="form-control" value="<?= esc($client->NOM); ?>" />
     </div>
 
     <div class="form-group">
         <label for="txtPrenom">Prénom :</label>
-        <input type="text" name="txtPrenom" class="form-control" value="<?= esc($client->prenom); ?>" />
+        <input type="text" name="txtPrenom" class="form-control" value="<?= esc($client->PRENOM); ?>" />
     </div>
 
     <div class="form-group">
         <label for="txtAdresse">Adresse :</label>
-        <input type="text" name="txtAdresse" class="form-control" value="<?= esc($client->adresse); ?>" />
+        <input type="text" name="txtAdresse" class="form-control" value="<?= esc($client->ADRESSE); ?>" />
     </div>
 
     <div class="form-group">
         <label for="txtCP">Code Postal :</label>
-        <input type="text" name="txtCP" class="form-control" value="<?= esc($client->cp); ?>" />
+        <input type="text" name="txtCP" class="form-control" value="<?= esc($client->CODEPOSTAL); ?>" />
     </div>
 
     <div class="form-group">
         <label for="txtVille">Ville :</label>
-        <input type="text" name="txtVille" class="form-control" value="<?= esc($client->ville); ?>" />
+        <input type="text" name="txtVille" class="form-control" value="<?= esc($client->VILLE); ?>" />
     </div>
 
     <div class="form-group">
         <label for="txtTelFixe">Téléphone Fixe :</label>
-        <input type="text" name="txtTelFixe" class="form-control" value="<?= esc($client->telephonefixe); ?>" />
+        <input type="text" name="txtTelFixe" class="form-control" value="<?= esc($client->TELEPHONEFIXE); ?>" />
     </div>
 
     <div class="form-group">
         <label for="txtTelMobile">Téléphone Mobile :</label>
-        <input type="text" name="txtTelMobile" class="form-control" value="<?= esc($client->telephonemobile); ?>" />
+        <input type="text" name="txtTelMobile" class="form-control" value="<?= esc($client->TELEPHONEMOBILE); ?>" />
     </div>
 
     <div class="form-group">
         <label for="txtMel">Email :</label>
-        <input type="email" name="txtMel" class="form-control" value="<?= esc($client->mel); ?>" />
+        <input type="email" name="txtMel" class="form-control" value="<?= esc($client->MEL); ?>" />
     </div>
 
     <div class="form-group">
