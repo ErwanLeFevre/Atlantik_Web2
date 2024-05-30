@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 use App\Models\ModeleClient;
+use App\Models\ModeleLiaison;
 
 helper(['url', 'assets', 'form']);
 
@@ -11,6 +12,35 @@ class Client extends BaseController
         session()->destroy();
         return redirect()->to('connexion');
     } // Fin seDeconnecter
+
+
+    public function reserver($noTraversee)
+    {
+        $session = session();
+        $noClient = $session->get('noclient');
+        
+        if (!$noClient) {
+            return redirect()->to('/connexion');
+        }
+
+        $modLiaison = new ModeleLiaison();
+        $modClient = new ModeleClient();
+
+        $donnees['traversee'] = $modLiaison->getTraverseeDetails($noTraversee);
+        $donnees['client'] = $modClient->getClientDetails($noClient);
+        $donnees['tarifsLiaisons'] = $modLiaison->getAllTarifLiaison($donnees['traversee']->noliaison);
+
+        return view('Templates/Header')
+               . view('Client/vue_Reserver', $donnees)
+               . view('Templates/Footer');
+    }
+    public function confirmerReservation()
+    {
+        // Traitement de la réservation
+    }
+
+
+
 
     public function Modification()
     {

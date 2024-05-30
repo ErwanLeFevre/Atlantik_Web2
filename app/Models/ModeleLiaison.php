@@ -18,8 +18,10 @@ class ModeleLiaison extends Model
                     ->get()->getResult();
     }
 
-    public function getAllTarifLiaison()//$liaison
+    public function getAllTarifLiaison($liaison)
     {
+        $currentDate = date('Y-m-d');
+
         return $this->join('tarifer', 'tarifer.noliaison = liaison.noliaison', 'inner')
                     ->join('periode', 'periode.noperiode = tarifer.noperiode', 'inner')
                     ->join('categorie', 'categorie.lettrecategorie = tarifer.lettrecategorie', 'inner')
@@ -27,8 +29,20 @@ class ModeleLiaison extends Model
                     ->join('port as port_depart', 'liaison.noport_depart = port_depart.noport', 'inner')
                     ->join('port as port_arrivee', 'liaison.noport_arrivee = port_arrivee.noport', 'inner')
                     ->select('categorie.lettrecategorie as lettrecategorie, categorie.libelle as categorielibelle, type.libelle as type, periode.datedebut as datedebut, periode.datefin as datefin, port_depart.nom as portdepart, port_arrivee.nom as portarrivee, tarifer.tarif as tarif')
-                    //->where('liaison.noliaison', $noLiaison)
+                    ->where('liaison.noliaison', $liaison)
+                    ->where('periode.datefin >=', $currentDate)
+                    ->orderBy('categorie.lettrecategorie, type.notype, periode.datedebut')
                     ->get()->getResult();
+    }
+
+    public function getTraverseeDetails($noTraversee)
+    {
+        return $this->join('traversee', 'traversee.noliaison = liaison.noliaison', 'inner')
+                    ->join('port as port_depart', 'liaison.noport_depart = port_depart.noport', 'inner')
+                    ->join('port as port_arrivee', 'liaison.noport_arrivee = port_arrivee.noport', 'inner')
+                    ->select('traversee.notraversee, traversee.dateheuredepart, port_depart.nom as portdepart, port_arrivee.nom as portarrivee')
+                    ->where('traversee.notraversee', $noTraversee)
+                    ->get()->getRow();
     }
 
     public function LesTraverseesBateaux($noLiaison, $dateTraversee)

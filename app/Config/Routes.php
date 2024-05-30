@@ -22,4 +22,5 @@ $routes->get('deconnexion', 'Client::deconnexion' );
 
 $routes->match(['get', 'post'], 'modification', 'Client::Modification');
 
+$routes->get('confirmerreservation', 'Client::confirmerReservation' );
 
