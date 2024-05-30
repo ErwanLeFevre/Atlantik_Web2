@@ -93,7 +93,7 @@ class Visiteur extends BaseController
         } else
         {
             $donnees['liaison'] = $modLiaison->find();
-            $donnees['tarifsLiaisons'] = $modLiaison->getAllTarifLiaison($noLiaison);
+            $donnees['tarifsLiaisons'] = $modLiaison->getAllTarifLiaison();
             return view('Templates/Header')
                    .view('Visiteur/vue_TarifsLiaisons', $donnees)
                    . view('Templates/Footer');

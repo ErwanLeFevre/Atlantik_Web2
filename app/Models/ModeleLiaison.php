@@ -27,7 +27,7 @@ class ModeleLiaison extends Model
                     ->join('port as port_depart', 'liaison.noport_depart = port_depart.noport', 'inner')
                     ->join('port as port_arrivee', 'liaison.noport_arrivee = port_arrivee.noport', 'inner')
                     ->select('categorie.lettrecategorie as lettrecategorie, categorie.libelle as categorielibelle, type.libelle as type, periode.datedebut as datedebut, periode.datefin as datefin, port_depart.nom as portdepart, port_arrivee.nom as portarrivee, tarifer.tarif as tarif')
-                    //->where('liaison.noliaison', $liaison)
+                    //->where('liaison.noliaison', $noLiaison)
                     ->get()->getResult();
     }
 
