@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Réservation</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
+
         <h2>Compagnie Atlantik</h2>
         <h3>Liaison <?= $traversee->portdepart ?> - <?= $traversee->portarrivee ?></h3>
         <p>Traversée n°<?= $traversee->notraversee ?> le <?= date('d/m/Y', strtotime($traversee->dateheuredepart)) ?> à <?= date('H:i', strtotime($traversee->dateheuredepart)) ?></p>
@@ -37,6 +29,4 @@
             </table>
             <button type="submit" class="btn btn-primary">Réserver</button>
         </form>
-    </div>
-</body>
-</html>
+

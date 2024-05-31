@@ -18,7 +18,7 @@ class ModeleLiaison extends Model
                     ->get()->getResult();
     }
 
-    public function getAllTarifLiaison($liaison)
+    public function getAllTarifLiaison()
     {
         $currentDate = date('Y-m-d');
 
@@ -29,8 +29,8 @@ class ModeleLiaison extends Model
                     ->join('port as port_depart', 'liaison.noport_depart = port_depart.noport', 'inner')
                     ->join('port as port_arrivee', 'liaison.noport_arrivee = port_arrivee.noport', 'inner')
                     ->select('categorie.lettrecategorie as lettrecategorie, categorie.libelle as categorielibelle, type.libelle as type, periode.datedebut as datedebut, periode.datefin as datefin, port_depart.nom as portdepart, port_arrivee.nom as portarrivee, tarifer.tarif as tarif')
-                    ->where('liaison.noliaison', $liaison)
-                    ->where('periode.datefin >=', $currentDate)
+                    //->where('liaison.noliaison', $liaison)
+                    //->where('periode.datefin >=', $currentDate)
                     ->orderBy('categorie.lettrecategorie, type.notype, periode.datedebut')
                     ->get()->getResult();
     }
@@ -52,4 +52,6 @@ class ModeleLiaison extends Model
                     ->select('traversee.notraversee as traversee, traversee.dateheuredepart as DHDepart, traversee.dateheurearrivee as DHArrivee')
                     ->get()->getResult();
     }
+
+    
 }

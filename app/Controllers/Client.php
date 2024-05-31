@@ -2,6 +2,7 @@
 namespace App\Controllers;
 use App\Models\ModeleClient;
 use App\Models\ModeleLiaison;
+use App\Models\ModeleReservation;
 
 helper(['url', 'assets', 'form']);
 
@@ -34,10 +35,88 @@ class Client extends BaseController
                . view('Client/vue_Reserver', $donnees)
                . view('Templates/Footer');
     }
+
     public function confirmerReservation()
     {
-        // Traitement de la réservation
+        $session = session();
+        $noClient = $session->get('noclient');
+        
+        if (!$noClient) {
+            return redirect()->to('/connexion');
+        }
+
+        $quantites = $this->request->getPost('quantite');
+        $noTraversee = $this->request->getPost('notraversee');
+
+        $modReservation = new ModeleReservation();
+        $modLiaison = new ModeleLiaison();
+        $modClient = new ModeleClient();
+
+        // Vérifier la disponibilité des places
+        if (!$modReservation->verifierDisponibilite($noTraversee, $quantites)) {
+            return redirect()->to('/reservation/echec');
+        }
+
+        // Calculer le montant total
+        $montantTotal = 0;
+        foreach ($quantites as $type => $quantite) {
+            if ($quantite > 0) {
+                $montantTotal += $quantite * $tarifs[$type];
+            }
+        }
+
+        // Générer un numéro de réservation unique
+        $noReservation = uniqid();
+
+        // Insérer la réservation
+        $data = [
+            'noreservation' => $noReservation,
+            'noclient' => $noClient,
+            'notraversee' => $noTraversee,
+            'dateheure' => date('Y-m-d H:i:s'),
+            'montanttotal' => $montantTotal,
+            'paye' => true, // ou false si vous implémentez le paiement
+            'modereglement' => 'Carte Bancaire'
+        ];
+
+        $modReservation->insert($data);
+
+        // Mettre à jour les disponibilités
+        $modReservation->mettreAJourDisponibilite($noTraversee, $quantites);
+
+        // Générer le compte-rendu
+        $donnees['reservation'] = [
+            'noReservation' => $noReservation,
+            'traversee' => $modLiaison->getTraverseeDetails($noTraversee),
+            'client' => $modClient->getClientDetails($noClient),
+            'quantites' => $quantites,
+            'montantTotal' => $montantTotal
+        ];
+
+        // Envoyer l'email
+        $this->envoyerEmailReservation($donnees['reservation']);
+
+        return view('Templates/Header')
+               . view('Client/vue_CompteRendu', $donnees)
+               . view('Templates/Footer');
     }
+
+
+    private function envoyerEmailReservation($reservation)
+    {
+        $email = \Config\Services::email();
+        
+        $email->setFrom('no-reply@compagnie-atlantik.com', 'Compagnie Atlantik');
+        $email->setTo($reservation['client']->email);
+
+        $email->setSubject('Confirmation de votre réservation');
+        
+        $message = view('Client/vue_confirmationReservation', $reservation);
+        $email->setMessage($message);
+
+        $email->send();
+    }
+    
 
 
 
@@ -116,6 +195,35 @@ class Client extends BaseController
         return view('Templates/Header', $donnees)
             . view('Client/vue_ModificationReussie', $donnees)
             . view('Templates/Footer');
+    }
+
+    public function historique()
+    {
+        $session = session();
+        $noClient = $session->get('noclient');
+        
+        if (!$noClient) {
+            return redirect()->to('/connexion');
+        }
+
+        $modReservation = new ModeleReservation();
+
+        $perPage = 10;
+        $currentPage = $this->request->getGet('page') ?? 1;
+        $offset = ($currentPage - 1) * $perPage;
+
+        $historiqueReservations = $modReservation->getHistoriqueReservations($noClient, $perPage, $offset);
+
+        $pagination = $modReservation->pager;
+
+        $donnees = [
+            'historiqueReservations' => $historiqueReservations,
+            'pagination' => $pagination
+        ];
+
+        return view('Templates/Header')
+               . view('Client/vue_Historique', $donnees)
+               . view('Templates/Footer');
     }
 }
     
