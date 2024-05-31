@@ -23,7 +23,9 @@ class FiltreClient implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        return redirect()->to(base_url('connexion'));
+        if (!$session->has('NOM')) {
+            return redirect()->to('connexion');
+        }
     }
     /**
      * Allows After filters to inspect and modify the response

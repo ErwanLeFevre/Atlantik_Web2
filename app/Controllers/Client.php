@@ -127,9 +127,7 @@ class Client extends BaseController
         $session = session();
 
         // Vérifie si l'utilisateur est connecté
-        if (!$session->has('NOM')) {
-            return redirect()->to('connexion');
-        }
+        
 
         $donnees['TitreDeLaPage'] = 'Modifier vos informations';
 
