@@ -24,6 +24,6 @@ $routes->match(['get', 'post'], 'modification', 'Client::Modification');
 
 
 $routes->get('confirmerreservation', 'Client::confirmerReservation' );
-$routes->post('reserver/(:num)', 'Client::reserver/$1');
-$routes->get('compte-rendu/(:num)', 'Client::compteRendu/$1');
+$routes->post('reserver/(:alphanum)', 'Client::reserver/$1');
+$routes->get('compte-rendu/(:alphanum)', 'Client::compteRendu/$1');
 $routes->get('historique', 'Client::historique');

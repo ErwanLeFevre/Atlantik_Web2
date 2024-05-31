@@ -37,10 +37,10 @@ class Visiteur extends BaseController
             'txtNom' => 'required|string|max_length[30]',
             'txtPrenom' => 'required|string|max_length[30]',
             'txtAdresse' => 'required|string|max_length[30]',
-            'txtCP' => 'required|string|max_length[30]',
+            'txtCP' => 'required|integer|max_length[5]',
             'txtVille' => 'required|string|max_length[30]',
-            'txtTelFixe' => 'required|string|max_length[10]',
-            'txtTelMobile' => 'required|string|max_length[10]',
+            'txtTelFixe' => 'required|integer|max_length[10]',
+            'txtTelMobile' => 'required|integer|max_length[10]',
             'txtMel' => 'required|valid_email|max_length[30]',
             'txtMDP' => 'required|string|max_length[30]',
         ];
